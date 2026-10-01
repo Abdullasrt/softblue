@@ -1,0 +1,490 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Star, Sparkles, CheckCircle2, ThumbsUp, MessageSquarePlus, X, Send, ShieldCheck, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
+
+export const reviewsData = [
+  {
+    id: 1,
+    name: "Dr. Meera Nambiar",
+    location: "Bangalore, India",
+    rating: 5,
+    date: "September 24, 2026",
+    title: "Unmatched Morning Clarity & Pure Amber Aroma",
+    review: "Having tasted tea from Darjeeling and Assam for years, SoftBlue's 1,600m Munnar single-origin is a revelation. The early morning plucking really makes a difference — there's zero harsh bitterness, just a rich malt floral aroma that lingers delightfully.",
+    verified: true,
+    bundlePurchased: "4 Packs / 1 KG — Grand Edition",
+    category: "Taste & Aroma",
+    helpfulCount: 42
+  },
+  {
+    id: 2,
+    name: "Vikram Malhotra",
+    location: "Mumbai, Maharashtra",
+    rating: 5,
+    date: "September 18, 2026",
+    title: "True Luxury Experience in Every Cup",
+    review: "SoftBlue stands toe-to-toe with luxury European tea houses. The zip-lock pouch retains full leaf moisture and oil, and the deep royal blue packaging makes it a prized gift for family and clients. Worth every rupee.",
+    verified: true,
+    bundlePurchased: "3 Packs — Connoisseur Set",
+    category: "Gift & Packaging",
+    helpfulCount: 29
+  },
+  {
+    id: 3,
+    name: "Ananya Roy",
+    location: "Kolkata, West Bengal",
+    rating: 5,
+    date: "September 12, 2026",
+    title: "Authentic Single-Origin Munnar Terroir",
+    review: "You can literally taste the cold mountain mist of 1,600m Munnar in the brew. No artificial flavors or coloring added — pure unadulterated tea leaves processed with artisanal care. My family is officially hooked!",
+    verified: true,
+    bundlePurchased: "2 Packs — Twin Reserve",
+    category: "Single-Origin Munnar",
+    helpfulCount: 38
+  },
+  {
+    id: 4,
+    name: "Siddharth K. Nair",
+    location: "Kochi, Kerala",
+    rating: 5,
+    date: "August 29, 2026",
+    title: "Direct From Munnar — Superior Freshness",
+    review: "Living in Kerala, I know good Munnar tea when I smell it. SoftBlue's early 5 AM harvest selection ensures high L-theanine smoothness. Express delivery arrived at my doorstep in 24 hours.",
+    verified: true,
+    bundlePurchased: "4 Packs / 1 KG — Grand Edition",
+    category: "Single-Origin Munnar",
+    helpfulCount: 51
+  },
+  {
+    id: 5,
+    name: "Priya Sundaram",
+    location: "Chennai, Tamil Nadu",
+    rating: 5,
+    date: "August 20, 2026",
+    title: "Subtle Floral Malt Notes with Fresh Milk",
+    review: "The brewing instructions on the pouch are spot-on. 4 minutes in 95°C water creates a glowing amber infusion that pairs beautifully with warm milk. Highly recommended for daily morning tea rituals.",
+    verified: true,
+    bundlePurchased: "1 Pack — Single Origin",
+    category: "Taste & Aroma",
+    helpfulCount: 19
+  },
+  {
+    id: 6,
+    name: "Rajesh Iyer",
+    location: "New Delhi, NCR",
+    rating: 5,
+    date: "August 15, 2026",
+    title: "Elegant Gift for Tea Aficionados",
+    review: "Ordered the 4-pack bundle as corporate hampers. Every single client complimented the smooth finish and gold-accented packaging. SoftBlue has set a new benchmark for Indian luxury tea.",
+    verified: true,
+    bundlePurchased: "4 Packs / 1 KG — Grand Edition",
+    category: "Gift & Packaging",
+    helpfulCount: 33
+  }
+];
+
+export default function ReviewSection() {
+  const [reviewsList, setReviewsList] = useState(reviewsData);
+  const [helpfulLiked, setHelpfulLiked] = useState({});
+  
+  // Slide state
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState(1); // 1 = right, -1 = left
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [newReview, setNewReview] = useState({
+    name: '',
+    location: '',
+    rating: 5,
+    title: '',
+    review: '',
+    bundlePurchased: '2 Packs — Twin Reserve'
+  });
+  const [submittedToast, setSubmittedToast] = useState(false);
+
+  const filteredReviews = reviewsList;
+
+  // Auto slide ticker
+  useEffect(() => {
+    if (!isAutoPlaying || filteredReviews.length <= 1) return;
+    const interval = setInterval(() => {
+      handleNextSlide();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [currentIndex, isAutoPlaying, filteredReviews.length]);
+
+  const handleNextSlide = () => {
+    setDirection(1);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % filteredReviews.length);
+  };
+
+  const handlePrevSlide = () => {
+    setDirection(-1);
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + filteredReviews.length) % filteredReviews.length);
+  };
+
+  const toggleHelpful = (id) => {
+    setHelpfulLiked(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    const createdReview = {
+      id: Date.now(),
+      name: newReview.name,
+      location: newReview.location || 'India',
+      rating: Number(newReview.rating),
+      date: 'Just now',
+      title: newReview.title,
+      review: newReview.review,
+      verified: true,
+      bundlePurchased: newReview.bundlePurchased,
+      category: 'Taste & Aroma',
+      helpfulCount: 1
+    };
+
+    setReviewsList([createdReview, ...reviewsList]);
+    setCurrentIndex(0);
+    setSubmittedToast(true);
+    setTimeout(() => {
+      setSubmittedToast(false);
+      setReviewModalOpen(false);
+      setNewReview({ name: '', location: '', rating: 5, title: '', review: '', bundlePurchased: '2 Packs — Twin Reserve' });
+    }, 2000);
+  };
+
+  // Determine items to display per view (responsive logic: 1 main focused card on mobile/desktop, or carousel)
+  const currentReview = filteredReviews[currentIndex % filteredReviews.length] || filteredReviews[0];
+
+  const slideVariants = {
+    enter: (dir) => ({
+      x: dir > 0 ? 300 : -300,
+      opacity: 0,
+      scale: 0.95
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        ease: [0.16, 1, 0.3, 1]
+      }
+    },
+    exit: (dir) => ({
+      x: dir < 0 ? 300 : -300,
+      opacity: 0,
+      scale: 0.95,
+      transition: {
+        duration: 0.4
+      }
+    })
+  };
+
+  return (
+    <section id="reviews" className="py-24 bg-[#071735] relative overflow-hidden border-t border-gold/20">
+      
+      {/* Glow Aura Backgrounds */}
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-10 left-0 w-96 h-96 bg-royal-navy/40 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-gold/10 text-gold text-xs font-semibold uppercase tracking-widest border border-gold/30">
+            <Sparkles className="w-3.5 h-3.5 text-gold" />
+            <span>Verified Connoisseur Reviews</span>
+          </div>
+
+          <h2 className="text-4xl sm:text-6xl font-serif text-white font-light tracking-wide">
+            Stories from <span className="gold-gradient-text italic font-normal">Discerning Tea Lovers</span>
+          </h2>
+
+          <p className="text-slate-300 text-base sm:text-lg font-light leading-relaxed">
+            Slide through authentic reviews from tea connoisseurs across India who have experienced the 1,600m single-origin purity of SoftBlue.
+          </p>
+
+          {/* Aggregate Rating Banner */}
+          <div className="glass-panel max-w-lg mx-auto p-4 rounded-2xl border border-gold/30 flex items-center justify-between shadow-xl mt-6">
+            <div className="flex items-center gap-3">
+              <span className="text-3xl font-serif font-bold text-gold">4.9</span>
+              <div>
+                <div className="flex text-amber-400">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-amber-400" />
+                  ))}
+                </div>
+                <span className="text-xs text-slate-300 font-light">Based on 428 Verified Buyers</span>
+              </div>
+            </div>
+
+            <button 
+              onClick={() => setReviewModalOpen(true)}
+              className="px-4 py-2 rounded-full bg-gold text-royal-deep font-bold text-xs uppercase tracking-wider hover:bg-gold-glow transition-all flex items-center gap-1.5 shadow"
+            >
+              <MessageSquarePlus className="w-4 h-4" />
+              <span>Write a Review</span>
+            </button>
+          </div>
+        </div>
+
+
+
+        {/* SLIDING CAROUSEL CONTAINER */}
+        <div className="max-w-4xl mx-auto relative px-4 sm:px-12 py-4">
+          
+          {/* Navigation Arrows */}
+          <button 
+            onClick={handlePrevSlide}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full glass-panel border border-gold/40 text-gold hover:text-white hover:bg-gold/20 flex items-center justify-center transition-all duration-300 shadow-xl"
+            aria-label="Previous review"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+
+          <button 
+            onClick={handleNextSlide}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full glass-panel border border-gold/40 text-gold hover:text-white hover:bg-gold/20 flex items-center justify-center transition-all duration-300 shadow-xl"
+            aria-label="Next review"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+
+          {/* Active Review Slide Display */}
+          <div className="relative min-h-[320px] flex items-center justify-center overflow-hidden py-4">
+            <AnimatePresence custom={direction} mode="wait">
+              {currentReview && (
+                <motion.div
+                  key={currentReview.id}
+                  custom={direction}
+                  variants={slideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  className="w-full glass-panel p-8 sm:p-12 rounded-3xl border border-gold/40 gold-border-glow shadow-2xl bg-gradient-to-b from-[#081f44]/95 via-[#061836]/95 to-[#051126]/95 backdrop-blur-xl space-y-6 relative overflow-hidden"
+                >
+                  {/* Decorative background quote mark */}
+                  <div className="absolute top-4 right-8 text-gold/10 font-serif text-9xl pointer-events-none select-none">
+                    “
+                  </div>
+
+                  {/* Header Row inside Card */}
+                  <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gold/20 pb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex text-amber-400">
+                        {[...Array(currentReview.rating)].map((_, i) => (
+                          <Star key={i} className="w-5 h-5 fill-amber-400" />
+                        ))}
+                      </div>
+                      <span className="text-xs text-gold font-serif italic">5.0 Out of 5 Stars</span>
+                    </div>
+
+                    {currentReview.verified && (
+                      <span className="inline-flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full font-medium">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Verified Connoisseur Buyer</span>
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Title & Review Content */}
+                  <div className="space-y-4">
+                    <h3 className="text-2xl sm:text-3xl font-serif text-white font-medium tracking-wide">
+                      "{currentReview.title}"
+                    </h3>
+                    <p className="text-base sm:text-lg text-slate-200 leading-relaxed font-light italic">
+                      "{currentReview.review}"
+                    </p>
+                  </div>
+
+                  {/* Footer Row inside Card */}
+                  <div className="pt-6 border-t border-gold/20 flex flex-wrap items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="text-white font-serif text-lg font-medium">{currentReview.name}</div>
+                      <div className="text-xs text-slate-400 font-light">{currentReview.location} · {currentReview.date}</div>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      {/* Bundle Tag */}
+                      <span className="text-xs text-gold bg-gold/10 px-3 py-1 rounded-lg border border-gold/30 font-medium">
+                        {currentReview.bundlePurchased}
+                      </span>
+
+                      {/* Helpful Button */}
+                      <button 
+                        onClick={() => toggleHelpful(currentReview.id)}
+                        className={`flex items-center gap-1.5 text-xs px-3.5 py-1.5 rounded-full border transition-all ${
+                          helpfulLiked[currentReview.id] 
+                            ? 'bg-gold text-royal-deep font-bold border-gold' 
+                            : 'bg-white/5 border-white/10 text-slate-300 hover:text-white'
+                        }`}
+                      >
+                        <ThumbsUp className="w-3.5 h-3.5" />
+                        <span>{currentReview.helpfulCount + (helpfulLiked[currentReview.id] ? 1 : 0)}</span>
+                      </button>
+                    </div>
+                  </div>
+
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* SLIDER CONTROLS BAR (Dots Indicator Only) */}
+          <div className="flex items-center justify-center pt-6 max-w-sm mx-auto">
+            {/* Slide Indicators Dots */}
+            <div className="flex items-center gap-2">
+              {filteredReviews.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    setDirection(idx > currentIndex ? 1 : -1);
+                    setCurrentIndex(idx);
+                  }}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    currentIndex % filteredReviews.length === idx 
+                      ? 'w-8 bg-gold shadow-lg shadow-gold/50' 
+                      : 'w-2 bg-slate-600 hover:bg-slate-400'
+                  }`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* Write a Review Modal */}
+      {reviewModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in overflow-y-auto">
+          <div className="glass-panel max-w-lg w-full rounded-3xl p-6 sm:p-8 border border-gold/40 shadow-2xl relative">
+            <button 
+              onClick={() => setReviewModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-full bg-royal-navy border border-white/10"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {!submittedToast ? (
+              <div className="space-y-5">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-gold text-xs font-semibold uppercase tracking-widest">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>Share Your SoftBlue Experience</span>
+                  </div>
+                  <h3 className="text-2xl font-serif text-white font-medium">Write a Connoisseur Review</h3>
+                </div>
+
+                <form onSubmit={handleReviewSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-xs text-slate-300 mb-1">Your Rating</label>
+                    <div className="flex gap-2">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setNewReview({ ...newReview, rating: star })}
+                          className="p-1 hover:scale-110 transition-transform"
+                        >
+                          <Star className={`w-6 h-6 ${star <= newReview.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-600'}`} />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs text-slate-300 mb-1">Your Full Name *</label>
+                      <input 
+                        required
+                        type="text" 
+                        placeholder="e.g. Anand V."
+                        value={newReview.name}
+                        onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
+                        className="w-full bg-royal-navy border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-gold"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs text-slate-300 mb-1">City / Location</label>
+                      <input 
+                        type="text" 
+                        placeholder="e.g. Hyderabad"
+                        value={newReview.location}
+                        onChange={(e) => setNewReview({ ...newReview, location: e.target.value })}
+                        className="w-full bg-royal-navy border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-gold"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-slate-300 mb-1">Bundle Purchased</label>
+                    <select 
+                      value={newReview.bundlePurchased}
+                      onChange={(e) => setNewReview({ ...newReview, bundlePurchased: e.target.value })}
+                      className="w-full bg-royal-navy border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-gold"
+                    >
+                      <option value="1 Pack — Single Origin">1 Pack — Single Origin (250g)</option>
+                      <option value="2 Packs — Twin Reserve">2 Packs — Twin Reserve (500g)</option>
+                      <option value="3 Packs — Connoisseur Set">3 Packs — Connoisseur Set (750g)</option>
+                      <option value="4 Packs / 1 KG — Grand Edition">4 Packs / 1 KG — Grand Edition</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-slate-300 mb-1">Review Headline *</label>
+                    <input 
+                      required
+                      type="text" 
+                      placeholder="e.g. Exceptional morning tea..."
+                      value={newReview.title}
+                      onChange={(e) => setNewReview({ ...newReview, title: e.target.value })}
+                      className="w-full bg-royal-navy border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-gold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-slate-300 mb-1">Your Detailed Review *</label>
+                    <textarea 
+                      required
+                      rows="3"
+                      placeholder="Describe the aroma, taste notes, and brewing experience..."
+                      value={newReview.review}
+                      onChange={(e) => setNewReview({ ...newReview, review: e.target.value })}
+                      className="w-full bg-royal-navy border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-gold resize-none"
+                    />
+                  </div>
+
+                  <button 
+                    type="submit"
+                    className="w-full py-3.5 rounded-full bg-gradient-to-r from-gold via-amber-400 to-gold text-royal-deep font-bold text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-xl flex items-center justify-center gap-2"
+                  >
+                    <Send className="w-4 h-4" />
+                    <span>Submit Verified Review</span>
+                  </button>
+
+                </form>
+              </div>
+            ) : (
+              <div className="text-center py-8 space-y-4 animate-fade-in">
+                <div className="w-16 h-16 rounded-full bg-gold/20 text-gold flex items-center justify-center mx-auto border border-gold">
+                  <CheckCircle2 className="w-8 h-8 text-gold" />
+                </div>
+                <h3 className="text-2xl font-serif text-white">Review Submitted!</h3>
+                <p className="text-xs text-slate-300">
+                  Thank you, {newReview.name}. Your verified review has been published.
+                </p>
+              </div>
+            )}
+
+          </div>
+        </div>
+      )}
+
+    </section>
+  );
+}
