@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Mountain, Sparkles, Compass, ShieldCheck, Sun, Feather, Wind } from 'lucide-react';
+import { ArrowRight, Mountain, Sparkles, Compass, ShieldCheck, Sun, Feather, Wind, MessageSquare } from 'lucide-react';
 
 export default function HeroSection({ onShopClick }) {
   const containerVariants = {
@@ -57,7 +57,7 @@ export default function HeroSection({ onShopClick }) {
         </motion.div>
 
         {/* Main Tagline */}
-        <motion.h1 variants={itemVariants} className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-serif font-light tracking-tight text-white leading-tight mb-6">
+        <motion.h1 variants={itemVariants} className="text-4xl sm:text-6xl md:text-7xl lg:text-7xl font-serif font-light tracking-tight text-white leading-tight mb-6">
           SoftBlue <span className="italic text-gold font-normal">Premium Tea</span>
         </motion.h1>
         
@@ -96,7 +96,7 @@ export default function HeroSection({ onShopClick }) {
               That tender leaf was already picked.
             </p>
             <div className="pt-3">
-              <p className="text-2xl sm:text-4xl font-serif font-semibold tracking-wider gold-gradient-text uppercase">
+              <p className="text-xl sm:text-3xl font-serif font-semibold tracking-wider gold-gradient-text uppercase">
                 That is SoftBlue.
               </p>
             </div>
@@ -130,7 +130,7 @@ export default function HeroSection({ onShopClick }) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
             onClick={onShopClick}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-gold via-amber-400 to-gold text-royal-deep font-semibold text-base uppercase tracking-widest shadow-2xl hover:shadow-gold/40 transition-all duration-300 group"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-gold-gradient text-royal-deep font-bold text-base uppercase tracking-widest shadow-2xl hover:shadow-gold/40 transition-all duration-300 group"
           >
             <span> Experience the Purity</span>
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
@@ -139,11 +139,11 @@ export default function HeroSection({ onShopClick }) {
           <motion.a 
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            href="#rare-teas"
+            href="/contact"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full glass-panel text-slate-200 hover:text-gold border border-gold/30 hover:border-gold text-sm tracking-wider uppercase transition-all duration-300"
           >
-            <Compass className="w-4 h-4 text-gold" />
-            <span>Discover Rarest Teas</span>
+            <MessageSquare className="w-4 h-4 text-gold" />
+            <span>Contact Us</span>
           </motion.a>
         </motion.div>
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Sparkles, CheckCircle2, ThumbsUp, MessageSquarePlus, X, Send, ShieldCheck, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
+import { Star, Sparkles, CheckCircle2, ThumbsUp, MessageSquarePlus, X, Send, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const reviewsData = [
   {
@@ -86,10 +86,8 @@ export const reviewsData = [
 export default function ReviewSection() {
   const [reviewsList, setReviewsList] = useState(reviewsData);
   const [helpfulLiked, setHelpfulLiked] = useState({});
-  
-  // Slide state
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(1); // 1 = right, -1 = left
+  const [direction, setDirection] = useState(1);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -105,7 +103,6 @@ export default function ReviewSection() {
 
   const filteredReviews = reviewsList;
 
-  // Auto slide ticker
   useEffect(() => {
     if (!isAutoPlaying || filteredReviews.length <= 1) return;
     const interval = setInterval(() => {
@@ -154,106 +151,96 @@ export default function ReviewSection() {
     }, 2000);
   };
 
-  // Determine items to display per view (responsive logic: 1 main focused card on mobile/desktop, or carousel)
   const currentReview = filteredReviews[currentIndex % filteredReviews.length] || filteredReviews[0];
 
   const slideVariants = {
     enter: (dir) => ({
-      x: dir > 0 ? 300 : -300,
+      x: dir > 0 ? 200 : -200,
       opacity: 0,
-      scale: 0.95
+      scale: 0.96
     }),
     center: {
       x: 0,
       opacity: 1,
       scale: 1,
       transition: {
-        duration: 0.5,
+        duration: 0.4,
         ease: [0.16, 1, 0.3, 1]
       }
     },
     exit: (dir) => ({
-      x: dir < 0 ? 300 : -300,
+      x: dir < 0 ? 200 : -200,
       opacity: 0,
-      scale: 0.95,
+      scale: 0.96,
       transition: {
-        duration: 0.4
+        duration: 0.3
       }
     })
   };
 
   return (
-    <section id="reviews" className="py-24 bg-[#071735] relative overflow-hidden border-t border-gold/20">
+    <section id="reviews" className="py-6 sm:py-8 bg-[#071735] relative overflow-hidden border border-gold/30 rounded-2xl my-4 shadow-2xl gold-border-glow shadow-[0_12px_36px_rgba(0,0,0,0.6)]">
       
       {/* Glow Aura Backgrounds */}
-      <div className="absolute top-1/4 right-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-10 left-0 w-96 h-96 bg-royal-navy/40 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute top-1/4 right-0 w-72 h-72 bg-gold/5 rounded-full blur-3xl pointer-events-none"></div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
         
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-gold/10 text-gold text-xs font-semibold uppercase tracking-widest border border-gold/30">
-            <Sparkles className="w-3.5 h-3.5 text-gold" />
+        {/* Compact Section Header */}
+        <div className="text-center max-w-2xl mx-auto mb-4 space-y-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-gold/10 text-gold text-[10px] font-semibold uppercase tracking-widest border border-gold/30">
+            <Sparkles className="w-3 h-3 text-gold" />
             <span>Verified Connoisseur Reviews</span>
           </div>
 
-          <h2 className="text-4xl sm:text-6xl font-serif text-white font-light tracking-wide">
+          <h2 className="text-2xl sm:text-3xl font-serif text-white font-light tracking-wide">
             Stories from <span className="gold-gradient-text italic font-normal">Discerning Tea Lovers</span>
           </h2>
 
-          <p className="text-slate-300 text-base sm:text-lg font-light leading-relaxed">
-            Slide through authentic reviews from tea connoisseurs across India who have experienced the 1,600m single-origin purity of SoftBlue.
-          </p>
-
-          {/* Aggregate Rating Banner */}
-          <div className="glass-panel max-w-lg mx-auto p-4 rounded-2xl border border-gold/30 flex items-center justify-between shadow-xl mt-6">
-            <div className="flex items-center gap-3">
-              <span className="text-3xl font-serif font-bold text-gold">4.9</span>
-              <div>
-                <div className="flex text-amber-400">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-amber-400" />
-                  ))}
-                </div>
-                <span className="text-xs text-slate-300 font-light">Based on 428 Verified Buyers</span>
+          {/* Compact Aggregate Rating & Write Review Bar */}
+          <div className="glass-panel max-w-md mx-auto p-2.5 px-4 rounded-xl border border-gold/30 flex items-center justify-between shadow-[0_8px_25px_rgba(0,0,0,0.4)] mt-2">
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-serif font-bold text-gold">4.9</span>
+              <div className="flex text-amber-400">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
+                ))}
               </div>
+              <span className="text-[11px] text-slate-300 font-light hidden sm:inline">(428 Reviews)</span>
             </div>
 
             <button 
               onClick={() => setReviewModalOpen(true)}
-              className="px-4 py-2 rounded-full bg-gold text-royal-deep font-bold text-xs uppercase tracking-wider hover:bg-gold-glow transition-all flex items-center gap-1.5 shadow"
+              className="px-3 py-1 rounded-full bg-gold text-royal-deep font-bold text-[10px] uppercase tracking-wider hover:bg-gold-glow transition-all flex items-center gap-1 shadow-lg"
             >
-              <MessageSquarePlus className="w-4 h-4" />
-              <span>Write a Review</span>
+              <MessageSquarePlus className="w-3 h-3" />
+              <span>Write Review</span>
             </button>
           </div>
         </div>
 
-
-
         {/* SLIDING CAROUSEL CONTAINER */}
-        <div className="max-w-4xl mx-auto relative px-4 sm:px-12 py-4">
+        <div className="max-w-3xl mx-auto relative px-2 sm:px-10">
           
-          {/* Navigation Arrows */}
+          {/* Compact Navigation Arrows */}
           <button 
             onClick={handlePrevSlide}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full glass-panel border border-gold/40 text-gold hover:text-white hover:bg-gold/20 flex items-center justify-center transition-all duration-300 shadow-xl"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full glass-panel border border-gold/40 text-gold hover:text-white hover:bg-gold/20 flex items-center justify-center transition-all shadow-lg"
             aria-label="Previous review"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-4 h-4" />
           </button>
 
           <button 
             onClick={handleNextSlide}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full glass-panel border border-gold/40 text-gold hover:text-white hover:bg-gold/20 flex items-center justify-center transition-all duration-300 shadow-xl"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full glass-panel border border-gold/40 text-gold hover:text-white hover:bg-gold/20 flex items-center justify-center transition-all shadow-lg"
             aria-label="Next review"
           >
-            <ChevronRight className="w-6 h-6" />
+            <ChevronRight className="w-4 h-4" />
           </button>
 
-          {/* Active Review Slide Display */}
-          <div className="relative min-h-[320px] flex items-center justify-center overflow-hidden py-4">
+          {/* Active Compact Review Slide */}
+          <div className="relative min-h-[180px] flex items-center justify-center overflow-hidden py-1">
             <AnimatePresence custom={direction} mode="wait">
               {currentReview && (
                 <motion.div
@@ -263,65 +250,58 @@ export default function ReviewSection() {
                   initial="enter"
                   animate="center"
                   exit="exit"
-                  className="w-full glass-panel p-8 sm:p-12 rounded-3xl border border-gold/40 gold-border-glow shadow-2xl bg-gradient-to-b from-[#081f44]/95 via-[#061836]/95 to-[#051126]/95 backdrop-blur-xl space-y-6 relative overflow-hidden"
+                  className="w-full glass-panel p-4 sm:p-6 rounded-2xl border border-gold/40 shadow-[0_15px_35px_rgba(0,0,0,0.7)] gold-border-glow bg-gradient-to-b from-[#081f44]/95 to-[#051126]/95 backdrop-blur-md space-y-3 relative"
                 >
-                  {/* Decorative background quote mark */}
-                  <div className="absolute top-4 right-8 text-gold/10 font-serif text-9xl pointer-events-none select-none">
-                    “
-                  </div>
-
                   {/* Header Row inside Card */}
-                  <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gold/20 pb-4">
-                    <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gold/15 pb-2.5">
+                    <div className="flex items-center gap-2">
                       <div className="flex text-amber-400">
                         {[...Array(currentReview.rating)].map((_, i) => (
-                          <Star key={i} className="w-5 h-5 fill-amber-400" />
+                          <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
                         ))}
                       </div>
-                      <span className="text-xs text-gold font-serif italic">5.0 Out of 5 Stars</span>
+                      <span className="text-[11px] text-gold font-serif italic">5.0 / 5</span>
                     </div>
 
                     {currentReview.verified && (
-                      <span className="inline-flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full font-medium">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>Verified Connoisseur Buyer</span>
+                      <span className="inline-flex items-center gap-1 text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2.5 py-0.5 rounded-full font-medium">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                        <span>Verified Buyer</span>
                       </span>
                     )}
                   </div>
 
-                  {/* Title & Review Content */}
-                  <div className="space-y-4">
-                    <h3 className="text-2xl sm:text-3xl font-serif text-white font-medium tracking-wide">
+                  {/* Title & Body */}
+                  <div className="space-y-1.5">
+                    <h3 className="text-base sm:text-lg font-serif text-white font-medium">
                       "{currentReview.title}"
                     </h3>
-                    <p className="text-base sm:text-lg text-slate-200 leading-relaxed font-light italic">
+                    <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-light italic">
                       "{currentReview.review}"
                     </p>
                   </div>
 
                   {/* Footer Row inside Card */}
-                  <div className="pt-6 border-t border-gold/20 flex flex-wrap items-center justify-between gap-4">
-                    <div className="space-y-1">
-                      <div className="text-white font-serif text-lg font-medium">{currentReview.name}</div>
-                      <div className="text-xs text-slate-400 font-light">{currentReview.location} · {currentReview.date}</div>
+                  <div className="pt-3 border-t border-gold/15 flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <div>
+                      <span className="text-white font-serif font-medium">{currentReview.name}</span>
+                      <span className="text-slate-400 font-light text-[11px] ml-2">· {currentReview.location}</span>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                      {/* Bundle Tag */}
-                      <span className="text-xs text-gold bg-gold/10 px-3 py-1 rounded-lg border border-gold/30 font-medium">
+                    <div className="flex items-center gap-3">
+                      <span className="text-[10px] text-gold bg-gold/10 px-2.5 py-0.5 rounded-md border border-gold/20 font-medium">
                         {currentReview.bundlePurchased}
                       </span>
 
-                      {/* Helpful Button */}
                       <button 
                         onClick={() => toggleHelpful(currentReview.id)}
-                        className={`flex items-center gap-1.5 text-xs px-3.5 py-1.5 rounded-full border transition-all ${
+                        className={`flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border transition-all ${
                           helpfulLiked[currentReview.id] 
                             ? 'bg-gold text-royal-deep font-bold border-gold' 
                             : 'bg-white/5 border-white/10 text-slate-300 hover:text-white'
                         }`}
                       >
-                        <ThumbsUp className="w-3.5 h-3.5" />
+                        <ThumbsUp className="w-3 h-3" />
                         <span>{currentReview.helpfulCount + (helpfulLiked[currentReview.id] ? 1 : 0)}</span>
                       </button>
                     </div>
@@ -332,10 +312,9 @@ export default function ReviewSection() {
             </AnimatePresence>
           </div>
 
-          {/* SLIDER CONTROLS BAR (Dots Indicator Only) */}
-          <div className="flex items-center justify-center pt-6 max-w-sm mx-auto">
-            {/* Slide Indicators Dots */}
-            <div className="flex items-center gap-2">
+          {/* Dots Indicator */}
+          <div className="flex items-center justify-center pt-3">
+            <div className="flex items-center gap-1.5">
               {filteredReviews.map((_, idx) => (
                 <button
                   key={idx}
@@ -343,10 +322,10 @@ export default function ReviewSection() {
                     setDirection(idx > currentIndex ? 1 : -1);
                     setCurrentIndex(idx);
                   }}
-                  className={`h-2 rounded-full transition-all duration-300 ${
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
                     currentIndex % filteredReviews.length === idx 
-                      ? 'w-8 bg-gold shadow-lg shadow-gold/50' 
-                      : 'w-2 bg-slate-600 hover:bg-slate-400'
+                      ? 'w-6 bg-gold shadow-md' 
+                      : 'w-1.5 bg-slate-600 hover:bg-slate-400'
                   }`}
                   aria-label={`Go to slide ${idx + 1}`}
                 />
@@ -361,28 +340,28 @@ export default function ReviewSection() {
       {/* Write a Review Modal */}
       {reviewModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in overflow-y-auto">
-          <div className="glass-panel max-w-lg w-full rounded-3xl p-6 sm:p-8 border border-gold/40 shadow-2xl relative">
+          <div className="glass-panel max-w-lg w-full rounded-2xl p-6 border border-gold/40 shadow-2xl relative">
             <button 
               onClick={() => setReviewModalOpen(false)}
-              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-full bg-royal-navy border border-white/10"
+              className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white rounded-full bg-royal-navy border border-white/10"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
 
             {!submittedToast ? (
-              <div className="space-y-5">
+              <div className="space-y-4">
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-gold text-xs font-semibold uppercase tracking-widest">
+                  <div className="flex items-center gap-2 text-gold text-[10px] font-semibold uppercase tracking-widest">
                     <ShieldCheck className="w-3.5 h-3.5" />
                     <span>Share Your SoftBlue Experience</span>
                   </div>
-                  <h3 className="text-2xl font-serif text-white font-medium">Write a Connoisseur Review</h3>
+                  <h3 className="text-xl font-serif text-white font-medium">Write a Connoisseur Review</h3>
                 </div>
 
-                <form onSubmit={handleReviewSubmit} className="space-y-4">
+                <form onSubmit={handleReviewSubmit} className="space-y-3">
                   <div>
-                    <label className="block text-xs text-slate-300 mb-1">Your Rating</label>
-                    <div className="flex gap-2">
+                    <label className="block text-[11px] text-slate-300 mb-1">Your Rating</label>
+                    <div className="flex gap-1.5">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
                           key={star}
@@ -390,7 +369,7 @@ export default function ReviewSection() {
                           onClick={() => setNewReview({ ...newReview, rating: star })}
                           className="p-1 hover:scale-110 transition-transform"
                         >
-                          <Star className={`w-6 h-6 ${star <= newReview.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-600'}`} />
+                          <Star className={`w-5 h-5 ${star <= newReview.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-600'}`} />
                         </button>
                       ))}
                     </div>
@@ -398,31 +377,29 @@ export default function ReviewSection() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs text-slate-300 mb-1">Your Full Name *</label>
+                      <label className="block text-[11px] text-slate-300 mb-1">Your Full Name *</label>
                       <input 
                         required
                         type="text" 
-                        placeholder="e.g. Anand V."
                         value={newReview.name}
                         onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
-                        className="w-full bg-royal-navy border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-gold"
+                        className="w-full bg-royal-navy border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-gold"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs text-slate-300 mb-1">City / Location</label>
+                      <label className="block text-[11px] text-slate-300 mb-1">City / Location</label>
                       <input 
                         type="text" 
-                        placeholder="e.g. Hyderabad"
                         value={newReview.location}
                         onChange={(e) => setNewReview({ ...newReview, location: e.target.value })}
-                        className="w-full bg-royal-navy border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-gold"
+                        className="w-full bg-royal-navy border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-gold"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs text-slate-300 mb-1">Bundle Purchased</label>
+                    <label className="block text-[11px] text-slate-300 mb-1">Bundle Purchased</label>
                     <select 
                       value={newReview.bundlePurchased}
                       onChange={(e) => setNewReview({ ...newReview, bundlePurchased: e.target.value })}
@@ -436,45 +413,43 @@ export default function ReviewSection() {
                   </div>
 
                   <div>
-                    <label className="block text-xs text-slate-300 mb-1">Review Headline *</label>
+                    <label className="block text-[11px] text-slate-300 mb-1">Review Headline *</label>
                     <input 
                       required
                       type="text" 
-                      placeholder="e.g. Exceptional morning tea..."
                       value={newReview.title}
                       onChange={(e) => setNewReview({ ...newReview, title: e.target.value })}
-                      className="w-full bg-royal-navy border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-gold"
+                      className="w-full bg-royal-navy border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-gold"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs text-slate-300 mb-1">Your Detailed Review *</label>
+                    <label className="block text-[11px] text-slate-300 mb-1">Your Detailed Review *</label>
                     <textarea 
                       required
                       rows="3"
-                      placeholder="Describe the aroma, taste notes, and brewing experience..."
                       value={newReview.review}
                       onChange={(e) => setNewReview({ ...newReview, review: e.target.value })}
-                      className="w-full bg-royal-navy border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-gold resize-none"
+                      className="w-full bg-royal-navy border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-gold resize-none"
                     />
                   </div>
 
                   <button 
                     type="submit"
-                    className="w-full py-3.5 rounded-full bg-gradient-to-r from-gold via-amber-400 to-gold text-royal-deep font-bold text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-xl flex items-center justify-center gap-2"
+                    className="w-full py-3 rounded-full bg-gradient-to-r from-gold via-amber-400 to-gold text-royal-deep font-bold text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-xl flex items-center justify-center gap-2"
                   >
-                    <Send className="w-4 h-4" />
+                    <Send className="w-3.5 h-3.5" />
                     <span>Submit Verified Review</span>
                   </button>
 
                 </form>
               </div>
             ) : (
-              <div className="text-center py-8 space-y-4 animate-fade-in">
-                <div className="w-16 h-16 rounded-full bg-gold/20 text-gold flex items-center justify-center mx-auto border border-gold">
-                  <CheckCircle2 className="w-8 h-8 text-gold" />
+              <div className="text-center py-6 space-y-3 animate-fade-in">
+                <div className="w-12 h-12 rounded-full bg-gold/20 text-gold flex items-center justify-center mx-auto border border-gold">
+                  <CheckCircle2 className="w-6 h-6 text-gold" />
                 </div>
-                <h3 className="text-2xl font-serif text-white">Review Submitted!</h3>
+                <h3 className="text-xl font-serif text-white">Review Submitted!</h3>
                 <p className="text-xs text-slate-300">
                   Thank you, {newReview.name}. Your verified review has been published.
                 </p>

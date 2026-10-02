@@ -2,15 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Dedicated Crisp Indian Rupee Symbol Font (U+20B9 ₹) */
+@font-face {
+  font-family: 'RupeeFont';
+  src: local('Inter'), local('Segoe UI'), local('Roboto'), local('Arial'), local('sans-serif');
+  unicode-range: U+20B9; /* Indian Rupee Symbol ₹ */
+}
+
 @layer base {
+  * {
+    font-family: 'RupeeFont', 'Bookman Old Style', 'Bookman', 'URW Bookman', 'PT Serif', Georgia, serif;
+  }
+
   body {
-    @apply bg-[#051126] text-slate-100 font-sans selection:bg-gold selection:text-royal-deep;
+    @apply bg-[#051126] text-slate-100 selection:bg-gold selection:text-royal-deep;
+    font-family: 'RupeeFont', 'Bookman Old Style', 'Bookman', 'URW Bookman', 'PT Serif', Georgia, serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  h1, h2, h3, h4, h5, h6, p, span, button, input, textarea, select, a, div, label {
+    font-family: 'RupeeFont', 'Bookman Old Style', 'Bookman', 'URW Bookman', 'PT Serif', Georgia, serif;
   }
+}
+
+.font-rupee, .rupee-symbol {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important;
 }
 
 /* Custom Scrollbar */
@@ -47,6 +63,15 @@
   background: linear-gradient(135deg, #FFF0C2 0%, #D4AF37 50%, #AA820A 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.bg-gold-gradient {
+  background: linear-gradient(135deg, #FFF0C2 0%, #D4AF37 50%, #AA820A 100%);
+  color: #051126;
+}
+
+.bg-gold-gradient:hover {
+  background: linear-gradient(135deg, #FFFFFF 0%, #E5C158 50%, #B89010 100%);
 }
 
 .gold-border-glow {

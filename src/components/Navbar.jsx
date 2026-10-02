@@ -1,48 +1,94 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Menu, X, Sparkles, Phone, ArrowUpRight } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { ShoppingBag, Menu, X, Sparkles, Phone, ArrowUpRight, Wallet, User, Heart } from 'lucide-react';
 
-export default function Navbar({ cartCount, onOpenCart }) {
+export default function Navbar({ cartCount, walletBalance = 500, wishlistCount = 0 }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const currentPath = location.pathname;
+  const isStandalonePage = currentPath === '/cart' || currentPath === '/wallet' || currentPath === '/profile' || currentPath === '/why-softblue' || currentPath === '/rare-teas' || currentPath === '/shop' || currentPath === '/contact' || currentPath === '/wishlist';
+
   const navLinks = [
-    { id: 'hero', label: 'Home' },
-    { id: 'rare-teas', label: "World's Rarest Teas" },
-    { id: 'softblue-story', label: 'The Munnar Story' },
-    { id: 'infographic', label: 'Why SoftBlue' },
-    { id: 'shop', label: 'Shop & Bundles', highlighted: true },
-    { id: 'reviews', label: 'Reviews' },
-    { id: 'contact', label: 'Contact' },
+    { id: 'hero', label: 'Home', path: '/' },
+    { id: 'rare-teas', label: "World's Rarest Teas", path: '/rare-teas' },
+    { id: 'shop', label: 'Shop & Bundles', highlighted: true, path: '/shop' },
+    { id: 'why-softblue', label: 'Why SoftBlue', path: '/why-softblue' },
+    { id: 'contact', label: 'Contact', path: '/contact' },
   ];
 
-  // Scroll spy & glass header effect
+  // Scroll spy
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 40);
 
-      // Section scroll spy
-      const sections = navLinks.map(link => document.getElementById(link.id)).filter(Boolean);
-      const scrollPosition = window.scrollY + 200;
+      if (!isStandalonePage) {
+        const sections = navLinks.map(link => document.getElementById(link.id)).filter(Boolean);
+        const scrollPosition = window.scrollY + 200;
 
-      for (const section of sections) {
-        const top = section.offsetTop;
-        const height = section.offsetHeight;
-        if (scrollPosition >= top && scrollPosition < top + height) {
-          setActiveSection(section.id);
-          break;
+        for (const section of sections) {
+          const top = section.offsetTop;
+          const height = section.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            setActiveSection(section.id);
+            break;
+          }
         }
+      } else {
+        if (currentPath === '/cart') setActiveSection('cart');
+        if (currentPath === '/wallet') setActiveSection('wallet');
+        if (currentPath === '/profile') setActiveSection('profile');
+        if (currentPath === '/why-softblue') setActiveSection('why-softblue');
+        if (currentPath === '/rare-teas') setActiveSection('rare-teas');
+        if (currentPath === '/shop') setActiveSection('shop');
+        if (currentPath === '/contact') setActiveSection('contact');
+        if (currentPath === '/wishlist') setActiveSection('wishlist');
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isStandalonePage, currentPath]);
 
-  const scrollToSection = (id) => {
+  const handleNavClick = (link) => {
     setMobileMenuOpen(false);
-    setActiveSection(id);
-    const element = document.getElementById(id);
+
+    if (link.path === '/profile' || link.path === '/wallet' || link.path === '/cart' || link.path === '/why-softblue' || link.path === '/rare-teas' || link.path === '/shop' || link.path === '/contact' || link.path === '/wishlist') {
+      navigate(link.path);
+      return;
+    }
+
+    if (link.path === '/') {
+      if (isStandalonePage) {
+        navigate('/');
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      return;
+    }
+
+    if (isStandalonePage) {
+      navigate('/');
+      setTimeout(() => {
+        const element = document.getElementById(link.id);
+        if (element) {
+          const offset = 80;
+          const bodyRect = document.body.getBoundingClientRect().top;
+          const elementRect = element.getBoundingClientRect().top;
+          const elementPosition = elementRect - bodyRect;
+          const offsetPosition = elementPosition - offset;
+          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        }
+      }, 100);
+      return;
+    }
+
+    setActiveSection(link.id);
+    const element = document.getElementById(link.id);
     if (element) {
       const offset = 80;
       const bodyRect = document.body.getBoundingClientRect().top;
@@ -78,7 +124,13 @@ export default function Navbar({ cartCount, onOpenCart }) {
           
           {/* Brand Logo */}
           <button 
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
+            onClick={() => {
+              if (isStandalonePage) {
+                navigate('/');
+              } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }} 
             className="flex items-center gap-3 text-left group focus:outline-none"
             aria-label="SoftBlue Home"
           >
@@ -90,32 +142,33 @@ export default function Navbar({ cartCount, onOpenCart }) {
           </button>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-7 text-xs font-medium tracking-wider uppercase">
+          <nav className="hidden xl:flex items-center gap-6 text-xs font-medium tracking-wider uppercase">
             {navLinks.map((link) => {
-              const isActive = activeSection === link.id;
+              const isActive = (currentPath === link.path) || (isStandalonePage ? activeSection === link.id : activeSection === link.id);
+
               return (
                 <button
                   key={link.id}
-                  onClick={() => scrollToSection(link.id)}
+                  onClick={() => handleNavClick(link)}
                   className={`relative py-1 transition-all duration-300 flex items-center gap-1.5 focus:outline-none ${
-                    link.highlighted 
-                      ? 'text-gold font-semibold hover:text-white' 
-                      : isActive 
-                        ? 'text-gold font-semibold' 
+                    isActive 
+                      ? 'text-gold font-bold tracking-wider' 
+                      : link.highlighted 
+                        ? 'text-gold/90 font-semibold hover:text-white' 
                         : 'text-slate-300 hover:text-white'
                   }`}
                 >
                   <span>{link.label}</span>
 
                   {link.badge && (
-                    <span className="bg-gold/20 text-gold text-[9px] px-1.5 py-0.5 rounded font-bold tracking-widest border border-gold/30">
+                    <span className="bg-gold text-royal-deep text-[10px] px-1.5 py-0.5 rounded-full font-bold tracking-wider shadow">
                       {link.badge}
                     </span>
                   )}
 
                   {/* Active Indicator Underline */}
                   {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent rounded-full animate-fade-in" />
+                    <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-gold/30 via-gold to-gold/30 rounded-full animate-fade-in shadow-[0_0_8px_#d4af37]" />
                   )}
                 </button>
               );
@@ -123,21 +176,58 @@ export default function Navbar({ cartCount, onOpenCart }) {
           </nav>
 
           {/* Action Utilities */}
-          <div className="flex items-center gap-3 sm:gap-4">
-            
-            {/* Quick Buy CTA */}
+          <div className="flex items-center gap-2.5 sm:gap-3">
+              {/* Profile Icon Button (Right next to cart icon!) */}
             <button 
-              onClick={() => scrollToSection('shop')}
-              className="hidden sm:inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest px-4 py-2 rounded-full border border-gold text-gold hover:bg-gold hover:text-royal-deep transition-all duration-300 shadow-md"
+              onClick={() => navigate('/profile')}
+              className={`relative p-2.5 rounded-full border transition-all duration-300 group focus:outline-none ${
+                currentPath === '/profile' ? 'bg-gold text-royal-deep border-gold shadow-lg' : 'bg-royal-navy border-gold/30 hover:border-gold text-slate-100 hover:text-gold'
+              }`}
+              aria-label="User Profile & Saved Addresses"
+              title="User Profile & Saved Addresses"
             >
-              <span>Experience Purity</span>
+              <User className="w-5 h-5 transition-transform group-hover:scale-110" />
+            </button>
+            
+            {/* Digital Wallet Icon Button */}
+            <button
+              onClick={() => navigate('/wallet')}
+              className={`relative p-2.5 rounded-full border transition-all duration-300 group focus:outline-none ${
+                currentPath === '/wallet' ? 'bg-gold text-royal-deep border-gold shadow-lg' : 'bg-royal-navy border-gold/30 hover:border-gold text-slate-100 hover:text-gold'
+              }`}
+              aria-label="Digital Wallet"
+              title={`Digital Wallet (Balance: ₹${walletBalance})`}
+            >
+              <Wallet className="w-5 h-5 transition-transform group-hover:scale-110" />
             </button>
 
-            {/* Shopping Bag Button */}
+            {/* Wishlist Heart Icon Button */}
+            <button
+              onClick={() => navigate('/wishlist')}
+              className={`relative p-2.5 rounded-full border transition-all duration-300 group focus:outline-none ${
+                currentPath === '/wishlist' ? 'bg-gold text-royal-deep border-gold shadow-lg' : 'bg-royal-navy border-gold/30 hover:border-gold text-slate-100 hover:text-gold'
+              }`}
+              aria-label="View Wishlist Reserve"
+              title={`Wishlist Vault (${wishlistCount} saved items)`}
+            >
+              <Heart className={`w-5 h-5 transition-transform group-hover:scale-110 ${currentPath === '/wishlist' ? 'fill-royal-deep' : ''}`} />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-gold text-royal-deep font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#051126] shadow-lg">
+                  {wishlistCount}
+                </span>
+              )}
+            </button>
+
+        
+
+            {/* Shopping Bag Icon Button */}
             <button 
-              onClick={onOpenCart}
-              className="relative p-2.5 rounded-full bg-royal-navy border border-gold/30 hover:border-gold text-slate-100 hover:text-gold transition-all duration-300 group focus:outline-none"
-              aria-label="View Cart"
+              onClick={() => navigate('/cart')}
+              className={`relative p-2.5 rounded-full border transition-all duration-300 group focus:outline-none ${
+                currentPath === '/cart' ? 'bg-gold text-royal-deep border-gold shadow-lg' : 'bg-royal-navy border-gold/30 hover:border-gold text-slate-100 hover:text-gold'
+              }`}
+              aria-label="View Cart Page"
+              title="Open Separate Cart Page"
             >
               <ShoppingBag className="w-5 h-5 transition-transform group-hover:scale-110" />
               {cartCount > 0 && (
@@ -150,7 +240,7 @@ export default function Navbar({ cartCount, onOpenCart }) {
             {/* Mobile Menu Toggle Button */}
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 text-slate-300 hover:text-white rounded-lg focus:outline-none"
+              className="xl:hidden p-2 text-slate-300 hover:text-white rounded-lg focus:outline-none"
               aria-label="Toggle Navigation Menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6 text-gold" /> : <Menu className="w-6 h-6" />}
@@ -161,24 +251,40 @@ export default function Navbar({ cartCount, onOpenCart }) {
 
         {/* Mobile Slide-down Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden glass-panel border-b border-gold/30 px-6 pt-6 pb-8 space-y-5 animate-fade-in shadow-2xl">
+          <div className="xl:hidden glass-panel border-b border-gold/30 px-6 pt-6 pb-8 space-y-5 animate-fade-in shadow-2xl">
             <div className="space-y-3 border-b border-white/10 pb-4">
               {navLinks.map((link) => (
                 <button
                   key={link.id}
-                  onClick={() => scrollToSection(link.id)}
+                  onClick={() => handleNavClick(link)}
                   className={`block w-full text-left py-2 text-sm uppercase tracking-wider transition-colors flex items-center justify-between ${
-                    activeSection === link.id ? 'text-gold font-bold' : 'text-slate-200 hover:text-gold'
+                    (currentPath === link.path || activeSection === link.id) ? 'text-gold font-bold pl-2 border-l-2 border-gold' : 'text-slate-200 hover:text-gold'
                   }`}
                 >
                   <span>{link.label}</span>
                   {link.badge && (
-                    <span className="bg-gold/20 text-gold text-[10px] px-2 py-0.5 rounded font-semibold">
+                    <span className="bg-gold text-royal-deep text-[10px] px-2 py-0.5 rounded-full font-bold">
                       {link.badge}
                     </span>
                   )}
                 </button>
               ))}
+
+              {/* Mobile Profile Link */}
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigate('/profile');
+                }}
+                className={`block w-full text-left py-2 text-sm uppercase tracking-wider transition-colors flex items-center justify-between ${
+                  currentPath === '/profile' ? 'text-gold font-bold' : 'text-slate-200 hover:text-gold'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-gold" />
+                  <span>Profile & Saved Addresses</span>
+                </div>
+              </button>
             </div>
 
             {/* Mobile Contact Shortcuts */}

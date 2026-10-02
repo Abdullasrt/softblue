@@ -41,8 +41,9 @@ export default {
         }
       },
       fontFamily: {
-        serif: ['Cormorant Garamond', 'Playfair Display', 'Georgia', 'serif'],
-        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+        serif: ['RupeeFont', '"Bookman Old Style"', 'Bookman', '"URW Bookman"', 'Georgia', 'serif'],
+        sans: ['RupeeFont', '"Bookman Old Style"', 'Bookman', '"URW Bookman"', 'Georgia', 'serif'],
+        rupee: ['Inter', 'system-ui', '-apple-system', '"Segoe UI"', 'Roboto', 'sans-serif'],
       },
       animation: {
         'fade-in': 'fadeIn 1s ease-out forwards',
